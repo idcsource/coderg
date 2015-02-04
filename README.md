@@ -42,6 +42,14 @@ CoderG依赖两个第三方包：
 
 目前项目网站还只有一个临时的访问地址：[CoderG](http://www.ydmsh.com/shift.php?s=12121)。在这里你可以查看文档并提问。
 
+-------
+
+**使用**
+
++ 使用 go get "github.com/firemeditation/coderg" 进行安装；
+
++ 在自己的站点项目中用 import "github.com/firemeditation/coderg" 引用。
+
 ------
 
 **其他**
