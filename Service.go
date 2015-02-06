@@ -87,7 +87,7 @@ func (s *ServiceStruct) serviceGo(){
 		err = http.ListenAndServe(thePort, s.MainRouter);
 	}
 	if err != nil {
-		fmt.Fprintln(os.Stderr, "服务器动出错：", err);
+		fmt.Fprintln(os.Stderr, "服务启动出错：", err);
 		os.Exit(1)
 	}
 }

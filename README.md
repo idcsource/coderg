@@ -46,9 +46,9 @@ CoderG依赖两个第三方包：
 
 **使用**
 
-+ 使用 go get "github.com/firemeditation/coderg" 进行安装；
++ 使用 go get "github.com/idcsource/coderg" 进行安装；
 
-+ 在自己的站点项目中用 import "github.com/firemeditation/coderg" 引用。
++ 在自己的站点项目中用 import "github.com/idcsource/coderg" 引用。
 
 ------
 
