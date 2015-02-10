@@ -26,20 +26,40 @@ import(
 // 		user		# 数据库访问用户名
 //		passwd		# 数据库访问用户的密码
 //		dbname		# 数据库名
-func DatabasePrepare(conf *goconfig.ConfigFile) (*sql.DB) {
+func DatabasePrepare(conf *goconfig.ConfigFile) (db *sql.DB) {
+	db_type , e := conf.GetString("database","type");
+	if( e != nil ){
+		errs :=  CodergError(3, "");
+		fmt.Fprintln(os.Stderr, errs);
+		os.Exit(1);
+	}
+	switch db_type {
+		case "postgres":
+			db = connPostgres(conf);
+		default:
+			errs := CodergError(5,db_type);
+			fmt.Fprintln(os.Stderr, errs);
+			os.Exit(1);
+	}
+	return db;
+}
+
+func connPostgres(conf *goconfig.ConfigFile) (*sql.DB) {
 	db_server, e1 := conf.GetString("database","server");
 	db_port, e2 := conf.GetString("database","port");
 	db_user, e3 := conf.GetString("database","user");
 	db_passwd, e4 := conf.GetString("database","passwd");
 	db_dbname, e5 := conf.GetString("database","dbname");
 	if( e1 != nil || e2 != nil || e3 != nil || e4 != nil || e5 != nil ){
-		fmt.Fprintf(os.Stderr, "数据库配置文件错误！");
+		errs :=  CodergError(3, "");
+		fmt.Fprintln(os.Stderr, errs);
 		os.Exit(1);
 	}
 	connection_string := fmt.Sprintf("dbname=%s user=%s password=%s host=%s port=%s sslmode=disable", db_dbname, db_user, db_passwd, db_server, db_port);
 	db, err := sql.Open("postgres", connection_string);
 	if err != nil {
-		fmt.Fprintf(os.Stderr, "链接数据库出错：", err);
+		errs :=  CodergError(4, err.Error());
+		fmt.Fprintln(os.Stderr, errs);
 		os.Exit(1);
 	}
 	return db

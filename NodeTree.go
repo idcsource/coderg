@@ -28,8 +28,8 @@ func NewNodeTree(c ControllorInterface) (*NodeTree) {
 }
 
 //添加Children，返回Children的子节点书
-func (nt *NodeTree) AddNode (mark, conf string, c ControllorInterface) (*NodeTree, string){
-	wrong := "";
+func (nt *NodeTree) AddNode (mark, conf string, c ControllorInterface) (*NodeTree, error){
+	var wrong error;
 	cv := reflect.ValueOf(c);
 	nt.IfChildren = true;
 	cnt := &NodeTree{ Mark : mark, IfChildren : false, IfDoor : false, ControllorValue : cv, Children : make(map[string]*NodeTree) };
@@ -38,7 +38,7 @@ func (nt *NodeTree) AddNode (mark, conf string, c ControllorInterface) (*NodeTre
 		conf = globalPath + conf;
 		config, err := goconfig.ReadConfigFile(conf);
 		if err != nil {
-			wrong = "节点“" + mark +"”无法读取节点配置文件：" + conf;
+			wrong = CodergError(6, mark);
 		}
 		cnt.Config = config;
 	}
@@ -46,8 +46,8 @@ func (nt *NodeTree) AddNode (mark, conf string, c ControllorInterface) (*NodeTre
 	return nt.Children[mark], wrong;
 }
 
-func (nt *NodeTree) AddUnit (mark, conf string, d UnitDoorInterface) (*NodeTree, string){
-	wrong := "";
+func (nt *NodeTree) AddUnit (mark, conf string, d UnitDoorInterface) (*NodeTree, error){
+	var wrong error;
 	cv := reflect.ValueOf(d);
 	nt.IfChildren = true;
 	cnt := &NodeTree{ Mark : mark, IfChildren : false, IfDoor : true, ControllorValue : cv, Children : make(map[string]*NodeTree) };
@@ -56,7 +56,7 @@ func (nt *NodeTree) AddUnit (mark, conf string, d UnitDoorInterface) (*NodeTree,
 		conf = globalPath + conf;
 		config, err := goconfig.ReadConfigFile(conf);
 		if err != nil {
-			wrong = "节点“" + mark +"”无法读取节点配置文件：" + conf;
+			wrong = CodergError(6, mark);
 		}
 		cnt.Config = config;
 	}

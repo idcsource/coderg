@@ -35,7 +35,8 @@ func ServicePrepare(configfile string) (Service *ServiceStruct){
 	Service.Grp = Service.GlobalRelativePath;
 	webconfig, err := goconfig.ReadConfigFile(Service.GlobalRelativePath + configfile);
 	if(err != nil){
-		fmt.Fprintln(os.Stderr, "无法读取站点配置文件：",configfile, "：" , err);
+		errs :=  CodergError(1, err.Error());
+		fmt.Fprintln(os.Stderr, errs);
 		os.Exit(1);
 	}
 	Service.WebConfig = webconfig;
@@ -49,7 +50,15 @@ func ServicePrepare(configfile string) (Service *ServiceStruct){
 		Service.TemplateConfig.AllCache(tpath);
 	}
 	*/
-	Service.Database = DatabasePrepare(Service.WebConfig);
+	ifdb, err := webconfig.GetBool("server","database");
+	if err != nil {
+		errs :=  CodergError(2, "");
+		fmt.Fprintln(os.Stderr, errs);
+		os.Exit(1);
+	}
+	if ifdb == true {
+		Service.Database = DatabasePrepare(Service.WebConfig);
+	}
 	return;
 }
 
@@ -87,7 +96,7 @@ func (s *ServiceStruct) serviceGo(){
 		err = http.ListenAndServe(thePort, s.MainRouter);
 	}
 	if err != nil {
-		fmt.Fprintln(os.Stderr, "服务启动出错：", err);
+		fmt.Fprintln(os.Stderr, "服务器动出错：", err);
 		os.Exit(1)
 	}
 }
